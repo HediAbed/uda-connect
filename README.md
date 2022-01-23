@@ -1,1 +1,1 @@
-# uda-connect
+# Udavity uda-connect project
