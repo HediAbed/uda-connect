@@ -66,3 +66,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+
+`python -m grpc_tools.protoc -I./app/udaconnect/grpcserver --python_out=./app/udaconnect/grpcserver --grpc_python_out=./app/udaconnect/grpcserver connection.proto`
