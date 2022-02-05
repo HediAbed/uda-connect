@@ -5,12 +5,10 @@ message LocationMessage {
   int32 person_id = 2;
   string longitude = 3;
   string latitude = 4;
-  string start_date = 5;
-  string end_date = 6;
-  int32 meters = 7;
+  string creation_time = 5;
 }
 
-message LocationMessageList {
+message LocationMessageListResponse {
   repeated LocationMessage locations = 1;
 }
 
@@ -21,7 +19,7 @@ message LocationRequest{
   int32 meters = 4;
 }
 
-service ConnectionService {
-  rpc Get(LocationRequest) returns (LocationMessageList);
+service LocationService {
+  rpc Get(LocationRequest) returns (LocationMessageListResponse);
 }
 

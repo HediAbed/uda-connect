@@ -47,6 +47,9 @@ services:
       - "5005:5005"
     depends_on:
       - location_ms_postgres
+      - uda_connect_kafka
+      - uda_connect_zookeeper
+
 
   location_events:
     build: location_events
@@ -59,6 +62,9 @@ services:
       - KAFKA_SERVER=uda_connect_kafka:9092
     ports:
       - "5002:5000"
+    depends_on:
+      - uda_connect_kafka
+      - uda_connect_zookeeper
 
 
   api:

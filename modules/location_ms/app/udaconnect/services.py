@@ -1,4 +1,4 @@
-import logging
+import logging , json
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
@@ -35,16 +35,14 @@ class LocationService:
         new_location.person_id = location["person_id"]
         new_location.creation_time = location["creation_time"]
         new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-        logger.info("******************")
         logger.info(location)
         db.session.add(new_location)
         db.session.commit()
-        logger.info("******************")
         return new_location
 
 
     @staticmethod
-    def find_locations(person_id: int, start_date: datetime, end_date: datetime, meters=5) -> List[Any]:
+    def find_locations(person_id: int, start_date: datetime, end_date: datetime, meters=5) -> List[Location]:
         """
         Finds all Person who have been within a given distance of a given Person within a date range.
 
@@ -80,39 +78,39 @@ class LocationService:
                 }
             )
 
-        # query = text(
-        #     """
-        # SELECT  person_id, id, ST_X(coordinate), ST_Y(coordinate), creation_time
-        # FROM    location
-        # WHERE   ST_DWithin(coordinate::geography,ST_SetSRID(ST_MakePoint(:latitude,:longitude),4326)::geography, :meters)
-        # AND     person_id != :person_id
-        # AND     TO_DATE(:start_date, 'YYYY-MM-DD') <= creation_time
-        # AND     TO_DATE(:end_date, 'YYYY-MM-DD') > creation_time;
-        # """
-        # )
+        query = text(
+            """
+        SELECT  person_id, id, ST_X(coordinate), ST_Y(coordinate), creation_time
+        FROM    location
+        WHERE   ST_DWithin(coordinate::geography,ST_SetSRID(ST_MakePoint(:latitude,:longitude),4326)::geography, :meters)
+        AND     person_id != :person_id
+        AND     TO_DATE(:start_date, 'YYYY-MM-DD') <= creation_time
+        AND     TO_DATE(:end_date, 'YYYY-MM-DD') > creation_time;
+        """
+        )
 
          # # TODO move this call to connection microservice    
         #result: List[Connection] = []
-
-        # for line in tuple(data):
-        #     for (
-        #         exposed_person_id,
-        #         location_id,
-        #         exposed_lat,
-        #         exposed_long,
-        #         exposed_time,
-        #     ) in db.engine.execute(query, **line):
-        #         location = Location(
-        #             id=location_id,
-        #             person_id=exposed_person_id,
-        #             creation_time=exposed_time,
-        #         )
-        #         location.set_wkt_with_coords(exposed_lat, exposed_long)
-                # # TODO move this call to connection microservice         
-                # result.append(
-                #     Connection(
-                #         person=person_map[exposed_person_id], location=location,
-                #     )
-                # )
-        logger.info(data)
-        return data        
+        result= []
+        for line in tuple(data):
+            for (
+                exposed_person_id,
+                location_id,
+                exposed_lat,
+                exposed_long,
+                exposed_time,
+            ) in db.engine.execute(query, **line):
+                location = Location(
+                    id=location_id,
+                    person_id=exposed_person_id,
+                    creation_time=exposed_time,
+                )
+                location.set_wkt_with_coords(exposed_lat, exposed_long)
+                # TODO move this call to connection microservice         
+                result.append(
+                    location
+                    # Location(
+                    #     person=person_map[exposed_person_id], location=location,
+                    # )
+                )
+        return result        
