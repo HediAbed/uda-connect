@@ -9,7 +9,8 @@ db = SQLAlchemy()
 def create_app(env=None):
     from app.config import config_by_name
     from app.routes import register_routes
-
+    from app.process import start_process
+    global app
     app = Flask(__name__)
     app.config.from_object(config_by_name[env or "test"])
     api = Api(app, title="UdaConnect Person MS API", version="0.1.0")
@@ -21,8 +22,13 @@ def create_app(env=None):
     with app.app_context():
         db.create_all()
         
+    start_process()
+    
     @app.route("/health")
     def health():
         return jsonify("healthy")
 
     return app
+
+def push_app_context():
+    app.app_context().push()

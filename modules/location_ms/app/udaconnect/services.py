@@ -89,9 +89,7 @@ class LocationService:
         """
         )
 
-         # # TODO move this call to connection microservice    
-        #result: List[Connection] = []
-        result= []
+        result: List[Location] = []
         for line in tuple(data):
             for (
                 exposed_person_id,

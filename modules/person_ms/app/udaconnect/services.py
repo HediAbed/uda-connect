@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, List
+from xmlrpc.client import boolean
 
 from app import db
 from app.udaconnect.models import Person
@@ -29,3 +30,12 @@ class PersonService:
     @staticmethod
     def retrieve_all() -> List[Person]:
         return db.session.query(Person).all()
+
+    @staticmethod
+    def retrieve_all_by_ids(ids :List[int]) -> List[Person]:
+        return db.session.query(Person).filter(Person.id.in_(ids)).all()
+
+    @staticmethod
+    def exists(person_id: int) -> boolean:
+        isExist = db.session.query(Person.query.filter(Person.id==person_id).exists()).scalar()
+        return isExist
