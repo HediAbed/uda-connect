@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+message PersonMessage {
+  int32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string company_name = 4;
+}
+
+message PersonMessageListResponse {
+  repeated PersonMessage persons = 1;
+}
+
+
+message PersonIDsRequest {
+  repeated int32 ids = 1;
+}
+
+message PersonIDRequest {
+  int32 id = 1;
+}
+
+
+message PersonExistsResponse{
+  bool exists = 1;
+}
+
+service PersonService {
+  rpc Get(PersonIDsRequest) returns (PersonMessageListResponse);
+  rpc Exists(PersonIDRequest) returns (PersonExistsResponse);
+}
+

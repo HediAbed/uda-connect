@@ -15,7 +15,10 @@ logger.setLevel(logging.INFO)
 class PersonServicer(person_pb2_grpc.PersonServiceServicer):
     def Get(self, request, context):
         push_app_context()
+        logger.info("ids: request => ")
+        logger.info(request.ids)
         persons: List[Person] = PersonService.retrieve_all_by_ids(request.ids)
+        logger.info("Persons: response => ")
         logger.info(persons)
         result = person__pb2.PersonMessageListResponse()
         for _perosn in persons:

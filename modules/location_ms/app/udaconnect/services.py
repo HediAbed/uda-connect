@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 from app import db
 from app.udaconnect.models import Location
 from app.udaconnect.schemas import LocationSchema
+from app.udaconnect.grpc.clients import PersonClient
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
 
@@ -30,6 +31,9 @@ class LocationService:
         if validation_results:
             logger.warning(f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
+        if not PersonClient.exists(location["person_id"]):
+            logger.warning(f"Person does not exists on person_ms with the folowing id: "+str(location["person_id"]))
+            raise Exception(f"Person id="+str(location["person_id"])+" not found!")
 
         new_location = Location()
         new_location.person_id = location["person_id"]

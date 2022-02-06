@@ -33,6 +33,8 @@ class LocationConsumer:
             group_id='my-group',
             value_deserializer=lambda x: json.loads(x.decode('utf-8')))
         for location in consumer: 
-            # logger.info(location.value)
-            LocationService.create(location.value)
+            try:
+                LocationService.create(location.value)
+            except:
+                logger.warning("An exception occurred on kafkaConsumer")
             # Process(target=LocationService.create,args=(location.value,)).start()
