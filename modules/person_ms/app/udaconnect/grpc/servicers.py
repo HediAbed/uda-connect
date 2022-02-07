@@ -17,7 +17,10 @@ class PersonServicer(person_pb2_grpc.PersonServiceServicer):
         push_app_context()
         logger.info("ids: request => ")
         logger.info(request.ids)
-        persons: List[Person] = PersonService.retrieve_all_by_ids(request.ids)
+        try:
+            persons: List[Person] = PersonService.retrieve_all_by_ids(request.ids)
+        except:
+            logger.error("some person ids are not in the database")
         logger.info("Persons: response => ")
         logger.info(persons)
         result = person__pb2.PersonMessageListResponse()

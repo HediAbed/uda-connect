@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import logging
 from app.udaconnect.models import  Location
 from app.udaconnect.schemas import (
     LocationSchema,
@@ -17,7 +17,8 @@ api = Namespace("UdaConnect", description="Connections via geolocation.")  # noq
 
 
 # TODO: This needs better exception handling
-
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 # @api.route("/locations")
 @api.route("/locations/<location_id>")
@@ -25,16 +26,9 @@ api = Namespace("UdaConnect", description="Connections via geolocation.")  # noq
 class LocationResource(Resource):
     @responds(schema=LocationSchema)
     def get(self, location_id) -> Location:
-        location: Location = LocationService.retrieve(location_id)
+        try:
+            location: Location = LocationService.retrieve(location_id)
+        except:
+            logger.error("location not found")
+            return Response('{"error":"Location not found"}', 404, mimetype='application/json')
         return location
-
-# @api.route("/test")
-# class TestResource(Resource):
-#     @accepts(schema=LocationSchema)
-#     @responds(schema=LocationSchema)
-#     def post(self) -> Location:
-#         request.get_json()
-#         location: Location = LocationService.create(request.get_json())
-#         return location
-#     def get(self):
-#         return '{"test": "ok"}'

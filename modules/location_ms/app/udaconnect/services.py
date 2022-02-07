@@ -15,12 +15,17 @@ logger = logging.getLogger("udaconnect-api")
 class LocationService:
     @staticmethod
     def retrieve(location_id) -> Location:
-        location, coord_text = (
-            db.session.query(Location, Location.coordinate.ST_AsText())
-            .filter(Location.id == location_id)
-            .one()
-        )
-
+        try: 
+            location, coord_text = (
+                db.session.query(Location, Location.coordinate.ST_AsText())
+                .filter(Location.id == location_id)
+                .one()
+            )
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()  
         # Rely on database to return text form of point to reduce overhead of conversion in app code
         location.wkt_shape = coord_text
         return location
@@ -61,13 +66,7 @@ class LocationService:
         ).filter(
             Location.creation_time >= start_date
         ).all()
-
-        # TODO move this query to person microservice     
-        # TODO make a call in connection microservice
-        # Cache all users in memory for quick lookup
-        # person_map: Dict[str, Person] = {person.id: person for person in PersonService.retrieve_all()}
-
-        # Prepare arguments for queries
+        
         data = []
         for location in locations:
             data.append(
@@ -108,11 +107,8 @@ class LocationService:
                     creation_time=exposed_time,
                 )
                 location.set_wkt_with_coords(exposed_lat, exposed_long)
-                # TODO move this call to connection microservice         
+        
                 result.append(
                     location
-                    # Location(
-                    #     person=person_map[exposed_person_id], location=location,
-                    # )
                 )
         return result        

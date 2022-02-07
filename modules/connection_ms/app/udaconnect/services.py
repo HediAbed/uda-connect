@@ -45,7 +45,11 @@ class ConnectionService:
 
         result= []
         for location in locations:
-            person = person_map[location.person_id]
+            try:
+                person = person_map[location.person_id]
+            except:
+                logger.error("location %d with none existing person id %d",location.id,location.person_id)
+                continue
             result.append(
                 {
                     "person": {

@@ -119,21 +119,21 @@ services:
       - uda_connect_zookeeper
 
 
-  api:
-    build: api
-    command: ["flask", "run", "--host=0.0.0.0"]
-    volumes:
-      - ./api:/backend
-    environment:
-      - DB_USERNAME=ct_admin
-      - DB_PASSWORD=wowimsosecure
-      - DB_NAME=geoconnections
-      - DB_HOST=postgres
-      - DB_PORT=5432
-    ports:
-      - "5000:5000"
-    depends_on:
-    - postgres
+  # api:
+  #   build: api
+  #   command: ["flask", "run", "--host=0.0.0.0"]
+  #   volumes:
+  #     - ./api:/backend
+  #   environment:
+  #     - DB_USERNAME=ct_admin
+  #     - DB_PASSWORD=wowimsosecure
+  #     - DB_NAME=geoconnections
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #   - postgres
 
   # client:
   #   tty: true

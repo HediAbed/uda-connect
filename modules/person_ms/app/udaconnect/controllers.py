@@ -1,7 +1,8 @@
 from app.udaconnect.models import Person
 from app.udaconnect.schemas import  PersonSchema
 from app.udaconnect.services import PersonService
-from flask import request
+from flask import request,Response
+import logging
 from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
 from typing import List
@@ -12,6 +13,8 @@ api = Namespace("UdaConnect", description="Connections via geolocation.")  # noq
 
 
 # TODO: This needs better exception handling
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 @api.route("/persons")
 class PersonsResource(Resource):
@@ -33,5 +36,9 @@ class PersonsResource(Resource):
 class PersonResource(Resource):
     @responds(schema=PersonSchema)
     def get(self, person_id) -> Person:
-        person: Person = PersonService.retrieve(person_id)
+        try:
+            person: Person = PersonService.retrieve(person_id)
+        except:
+            logger.error("person not found")
+            return Response('{"error":"Person not found"}', 404, mimetype='application/json')  
         return person

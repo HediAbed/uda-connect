@@ -24,7 +24,13 @@ class PersonService:
 
     @staticmethod
     def retrieve(person_id: int) -> Person:
-        person = db.session.query(Person).get(person_id)
+        try:
+            person = db.session.query(Person).get(person_id)
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close() 
         return person
 
     @staticmethod
@@ -33,7 +39,15 @@ class PersonService:
 
     @staticmethod
     def retrieve_all_by_ids(ids :List[int]) -> List[Person]:
-        return db.session.query(Person).filter(Person.id.in_(ids)).all()
+        try:
+            persons : List[Person] = db.session.query(Person).filter(Person.id.in_(ids)).all()
+        except:
+            persons = []
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
+        return persons
 
     @staticmethod
     def exists(person_id: int) -> boolean:
