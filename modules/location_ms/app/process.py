@@ -9,7 +9,10 @@ def start_process():
 
 
 def start_consumers_process():
-    Process(target=LocationConsumer.kafkaConsumer).start()
+    try:
+        Process(target=LocationConsumer.kafkaConsumer).start()
+    except:
+        Process(target=LocationConsumer.kafkaConsumer).start()
 
 def start_grpc_process():
     Process(target=LocationServer.server).start()

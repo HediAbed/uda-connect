@@ -34,7 +34,7 @@ spec:
         service: location-ms
     spec:
       containers:
-      - image: hediabed/location_ms:v1.0.0
+      - image: hediabed/location_ms:v1.0.1
         name: location-ms
         imagePullPolicy: Always
         ports:
