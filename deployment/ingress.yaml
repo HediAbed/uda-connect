@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-deploy
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: udaconnect-app
+              port: 
+                number: 3000
+        - path: /api/persons 
+          pathType: Prefix
+          backend:
+            service:
+              name: person-ms
+              port: 
+                number: 5000
+        - path: /api/locations 
+          pathType: Prefix
+          backend:
+            service:
+              name: location-ms
+              port: 
+                number: 5000
+        - path: /api/locations/events 
+          pathType: Prefix
+          backend:
+            service:
+              name: location-events
+              port: 
+                number: 5000
+        - path: /api/connections
+          pathType: Prefix
+          backend:
+            service:
+              name: connection-ms
+              port: 
+                number: 5000
+status:
+  loadBalancer: {}

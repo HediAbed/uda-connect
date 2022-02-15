@@ -30,10 +30,17 @@ spec:
       labels:
         service: udaconnect-app
     spec:
+      volumes:
+      - name: config-volume
+        configMap: 
+          name: udaconnect-app-env
       containers:
-      - image: udacity/nd064-udaconnect-app:latest
+      - image: hediabed/udaconnect-app:v1.0.0
         name: udaconnect-app
         imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /env
+          name: config-volume
         resources:
           requests:
             memory: "128Mi"

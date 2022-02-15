@@ -27,21 +27,12 @@ class ConnectionService:
         smoothly for a better user experience for API consumers?
         """
 
-
-        # TODO call grpc to get all location
-        logger.info("locations")
         locations= LocationClient.get(person_id, start_date, end_date, meters).locations
-        logger.info(locations)
-        # TODO call grpc to get all persons by ids
-        logger.info("persons_ids")
         persons_ids = list(set([location.person_id for location in locations]))
-        logger.info(persons_ids)
-        # Cache all persons from grpx call in memory for quick lookup
-        logger.info("person_map")
+        
         persons = PersonClient.get(persons_ids).persons
         person_map: Dict[int, Any] = {person.id: person for person in persons}
-        logger.info(person_map)
-        # TODO append a connection obejct with persons and locations
+
 
         result= []
         for location in locations:

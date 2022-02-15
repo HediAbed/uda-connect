@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 class Connection extends Component {
   constructor(props) {
@@ -20,9 +21,14 @@ class Connection extends Component {
 
   getConnections = (personId) => {
     if (personId) {
-      // TODO: endpoint should be abstracted into a config variable
       fetch(
-        `http://localhost:30001/api/persons/${personId}/connection?start_date=2020-01-01&end_date=2020-12-30&distance=5`
+        `${BASE_URL}/api/connections?start_date=2020-01-01&end_date=2020-12-30&distance=5&person_id=${personId}`, {
+          headers : { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+           }
+    
+        }
       )
         .then((response) => response.json())
         .then((connections) =>

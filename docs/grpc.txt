@@ -1,0 +1,48 @@
+
+#  person/Get
+
+Request Type 
+PersonIDsRequest
+- id : (int32 ) The List of unique IDs of persons to be retrieved
+
+
+Response Type
+PersonMessageListResponse
+- persons : (array<PersonMesssage>) list of persons
+where PersonMessage
+- id :         (int32 ) The Unique ID of the the person to be retrieved 
+- first_name : (string) The firstname of the person to be retrieved
+- last_name  : (string) The lastname of the person to be retrieved
+- company_name : (string) The company for which the person to be retrieved works 
+
+#  person/Exists
+
+Request Type
+PersonIDRequest
+- id : (int32 ) The Unique ID of the person to check it's existence
+
+Response Type 
+PersonExistsResponse
+- exists :(bool) A boolean parameter indicating weather the person exists
+
+#  location/Get
+
+Request Type
+LocationRequest
+- person_id : (int32) The Unique ID of the person for which locations of nearby persons are retrieved
+- start_date : (string) The lower bound to the time period within which location of nearby persons are retrived
+- end_date   : (string) The upper bound of the time period ithin which locations of nearby person are retrieved
+- meters     : (int32) The distance within which within which locations of nearby person are retrieved
+
+
+Response Type 
+LocationMessageListResponse 
+- locations : array<LocationMessage> list of locations of nearby person within a time slot and distance range
+where LocationMessage
+- id : (int32) The Unique ID of the location retrieved
+- person_id : (string) The Unique ID of the person on which the location is created
+- longitude : (string) The longitude of the location
+- latitude  : (string) The latitude of the location 
+- creation_time: (string) The time on which the location was created
+
+

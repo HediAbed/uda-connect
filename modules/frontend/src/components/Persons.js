@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Connection from "./Connection";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 class Persons extends Component {
   constructor(props) {
     super(props);
-    // TODO: endpoint should be abstracted into a config variable
-    this.endpoint_url = "http://localhost:30001/api/persons";
+    this.endpoint_url = `${BASE_URL}/api/persons`;
     this.state = {
       persons: [],
       display: null,
@@ -13,7 +13,13 @@ class Persons extends Component {
   }
 
   componentDidMount() {
-    fetch(this.endpoint_url)
+    fetch(this.endpoint_url, {
+      headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+
+    })
       .then((response) => response.json())
       .then((data) => this.setState({ persons: data }));
   }

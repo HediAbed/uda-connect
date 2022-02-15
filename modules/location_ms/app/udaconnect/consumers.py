@@ -1,4 +1,5 @@
 from kafka import KafkaConsumer
+from datetime import datetime
 import os
 import json
 import logging
@@ -29,7 +30,8 @@ class LocationConsumer:
             value_deserializer=lambda x: json.loads(x.decode('utf-8')))
         for location in consumer: 
             try:
-                LocationService.create(location.value)
+                l = LocationService.create(location.value)
+                logger.info(' %s, A new location with id %d and person id %d is created on location_ms!',datetime.now(),l.id,l.person_id)
             except:
                 logger.warning("An exception occurred on kafkaConsumer")
             # Process(target=LocationService.create,args=(location.value,)).start()

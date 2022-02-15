@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: person-ms
+  name: person-ms
+spec:
+  ports:
+  - name: "5000"
+    port: 5000
+    targetPort: 5000
+    nodePort: 30001
+  - name: "5005"
+    port: 5005
+    nodePort: 30002
+  selector:
+    service: person-ms
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: person-ms
+  name: person-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: person-ms
+  template:
+    metadata:
+      labels:
+        service: person-ms
+    spec:
+      containers:
+      - image: hediabed/person_ms:v1.0.0
+        name: person-ms
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 5000
+          - containerPort: 5005
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: person-db-env
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: person-db-secret
+              key: DB_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: person-db-env
+              key: DB_NAME
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: person-db-env
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: person-db-env
+              key: DB_PORT
+      restartPolicy: Always

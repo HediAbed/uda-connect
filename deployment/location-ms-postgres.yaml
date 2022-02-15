@@ -1,10 +1,10 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: postgres-volume
+  name: location-ms-postgres-volume
   labels:
     type: local
-    app: postgres
+    app: location-ms-postgres
 spec:
   storageClassName: manual
   capacity:
@@ -12,14 +12,14 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/data"
+    path: "/mnt/data/location"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: postgres-pv-claim
+  name: location-ms-postgres-pv-claim
   labels:
-    app: postgres
+    app: location-ms-postgres
 spec:
   storageClassName: manual
   accessModes:
@@ -31,29 +31,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: location-ms-postgres
   labels:
-    app: postgres
+    app: location-ms-postgres
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    app: postgres
+    app: location-ms-postgres
   ports:
    - port: 5432
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: location-ms-postgres
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: location-ms-postgres
   template:
     metadata:
       labels:
-        app: postgres
+        app: location-ms-postgres
     spec:
       containers:
         - name: postgres
@@ -65,17 +65,17 @@ spec:
           - name: POSTGRES_USER
             valueFrom:
               configMapKeyRef:
-                name: db-env
+                name: location-db-env
                 key: DB_USERNAME
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: db-secret
+                name: location-db-secret
                 key: DB_PASSWORD
           - name: POSTGRES_DB
             valueFrom:
               configMapKeyRef:
-                name: db-env
+                name: location-db-env
                 key: DB_NAME
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
@@ -83,4 +83,4 @@ spec:
       volumes:
         - name: postgresdb
           persistentVolumeClaim:
-            claimName: postgres-pv-claim
+            claimName: location-ms-postgres-pv-claim
