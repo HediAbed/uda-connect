@@ -25,3 +25,4 @@ htmlcov/
 *,cover
 .vagrant
 .idea
+docker-compose.yaml
