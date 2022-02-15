@@ -34,7 +34,7 @@ spec:
         service: location-ms
     spec:
       containers:
-      - image: hediabed/location_ms:v1.0.1
+      - image: hediabed/location_ms:v1.0.4
         name: location-ms
         imagePullPolicy: Always
         ports:
@@ -74,4 +74,8 @@ spec:
             configMapKeyRef:
               name: location-db-env
               key: DB_PORT
+      # initContainers:
+      # - name: initserviceforkafka
+      #   image: nginx
+      #   command: ['sh', '-c', 'until ping uda-connect-kafka -c 4; do echo waiting for kafka pods; sleep 5; done']
       restartPolicy: Always

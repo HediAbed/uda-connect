@@ -20,7 +20,6 @@ class LocationConsumer:
     @staticmethod
     def kafkaConsumer():
         # logger.info("kafkaConsumer")
-        push_app_context()
         consumer = KafkaConsumer(
             TOPIC_LOCATION,
             bootstrap_servers=[KAFKA_SERVER],
@@ -30,8 +29,20 @@ class LocationConsumer:
             value_deserializer=lambda x: json.loads(x.decode('utf-8')))
         for location in consumer: 
             try:
+                push_app_context()
                 l = LocationService.create(location.value)
                 logger.info(' %s, A new location with id %d and person id %d is created on location_ms!',datetime.now(),l.id,l.person_id)
-            except:
-                logger.warning("An exception occurred on kafkaConsumer")
+            except Exception as e:
+                logger.error("An exception occurred on kafkaConsumer %s",'division', exc_info=e)
             # Process(target=LocationService.create,args=(location.value,)).start()
+
+    @staticmethod        
+    def kafkaConsumerWithRetryConnection():
+        while True:
+            try:
+                LocationConsumer.kafkaConsumer()
+            except:
+                logger.warning("Waiting kafka server")
+                time.sleep(1)
+                continue
+            break
